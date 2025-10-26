@@ -404,7 +404,7 @@ form button:hover {
     .main-container {
         width: 90%;
         padding: 20px;
-        margin: 20px 0;
+        margin: 20px;
     }
     #welcome-msg {
        display: none; /* Oculta el mensaje en pantallas muy pequeñas */
