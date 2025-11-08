@@ -12,7 +12,8 @@ import thunderstormImg from './assets/weather/thunderstorm.svg';
 
 //El Encabezado -----
 //Hacemos que Header acepte una función "onSearch"
-function Header({ onSearch }) {
+//Agregamos onLoginClick para que el header acepte otra funcion
+function Header({ onSearch, onLoginClick }) {
   return (
     <header className="app-header">
       <div className="input-container">
@@ -21,14 +22,12 @@ function Header({ onSearch }) {
           <span className="material-symbols-outlined">search</span>
         </button>
       </div>
-
-      <div className="user-container">
-        
+        <div className="user-container">
         <div id="user-info" style={{ display: 'none' }}>
           <span id="welcome-msg"></span>
           <button id="logout-btn" className="login-btn">Salir</button>
         </div>
-        <button id="login-btn" className="login-btn">
+        <button id="login-btn" className="login-btn" onClick={onLoginClick}> {/*Aqui se agrego la funcion onLoginClick*/}
           <span className="material-symbols-outlined">login</span>
         </button>
       </div>
@@ -103,11 +102,12 @@ function MessageSection({ image, title, text, className, style }) {
 }
 
 // El Modal de Login -----
-function LoginModal({ style }) {
+// Hacemos que LoginModal acepte "style" y "onClose" como funciones
+function LoginModal({ style, onClose }) {
   return (
     <div id="login-modal" className="modal" style={style}>
       <div className="modal-content">
-        <span className="close-btn">&times;</span>
+        <span className="close-btn" onClick={onClose}>&times;</span>
         <form id="login-form">
           <h2>Iniciar Sesión</h2>
           <input type="text" id="username-input" placeholder="Nombre de usuario" required />
@@ -145,6 +145,20 @@ function App() {
   // 'null' porque no hay datos al cargar la app.
   const [weatherData, setWeatherData] = useState(null);
 
+
+  // --- DECIDI AÑADIR ESTO ---
+  // 1. Nuevo estado para la visibilidad del modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // 2. Funciones para abrir y cerrar el modal
+  const openLoginModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeLoginModal = () => {
+    setIsModalOpen(false);
+  };
+  // --- FIN DE LO AÑADIDO ---
+
   // Esta función se ejecutará cuando se haga clic en el botón de búsqueda
   const handleSearch = () => {
     // (en el futuro, aquí iría la llamada a la API)
@@ -166,7 +180,7 @@ function App() {
     <>
       <main className="main-container">
         {/*Pasamos la función 'handleSearch' al Header */}
-        <Header onSearch={handleSearch} />
+        <Header onSearch={handleSearch} onLoginClick={openLoginModal} />
 
         {/*Lógica de renderizado condicional */}
         {weatherData ? (
@@ -191,8 +205,8 @@ function App() {
             style={{ display: 'none' }} 
         />
       </main>
-
-      <LoginModal style={{ display: 'none' }} />
+        {/*Se pasa el estado 'isModalOpen' y la función 'closeLoginModal' al LoginModal*/}
+      <LoginModal style={{ display: isModalOpen ? 'flex' : 'none' }} onClose={closeLoginModal} />
     </>
   );
 }
