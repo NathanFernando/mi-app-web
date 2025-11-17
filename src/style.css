@@ -219,6 +219,8 @@ body::before {
 
 .login-btn:hover {
     background: rgba(0, 0, 0, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 0 10px, 0 0 30px rgba(0, 153, 255, 0.123);
 }
 
 #user-info {
@@ -245,6 +247,7 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
 
 .modal-content {
