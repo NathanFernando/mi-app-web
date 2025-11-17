@@ -110,16 +110,14 @@ function WeatherInfo({ data }) {
         </div>
       </div>
 
+
+      {/* Renderizamos el pronóstico dinámico */}
       <div className="forecast-items-container">
-        {[...Array(4)].map((_, index) => (
+        {data.forecast && data.forecast.map((item, index) => (
           <div className="forecast-item" key={index}>
-            <h5 className="forecast-item-date regular-txt">05 Aug</h5>
-            <img
-              src={thunderstormImg}
-              className="forecast-item-img"
-              alt="Forecast icon"
-            />
-            <h5 className="forecast-item-temp">29 °C</h5>
+            <h5 className="forecast-item-date regular-txt">{item.date}</h5>
+            <img src={item.icon} className="forecast-item-img" alt="Forecast icon" />
+            <h5 className="forecast-item-temp">{item.temp} °C</h5>
           </div>
         ))}
       </div>
@@ -249,38 +247,60 @@ function App() {
   };
 
   // Esta función ahora recibe la ciudad y llama a la API
+// CAMBIO: handleSearch ahora hace dos peticiones
   const handleSearch = async (city) => {
     try {
-      // 1. Construimos la URL
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=es`;
+      // 1. Clima Actual (Current Weather)
+      const urlWeather = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=es`;
+      const responseWeather = await fetch(urlWeather);
+      const dataWeather = await responseWeather.json();
 
-      // 2. Hacemos la petición
-      const response = await fetch(url);
-      const data = await response.json();
-
-      // 3. Verificamos si hubo error (404 Not Found)
-      if (data.cod === "404") {
+      if (dataWeather.cod === '404') {
         setNotFound(true);
         setWeatherData(null);
         return;
       }
 
-      // 4. Si todo salió bien, procesamos los datos
+      // 2. Pronóstico (Forecast) - NUEVO ENDPOINT
+      const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=es`;
+      const responseForecast = await fetch(urlForecast);
+      const dataForecast = await responseForecast.json();
+
+      // 3. Filtramos el pronóstico para obtener solo 1 dato por día (ej: a las 12:00:00)
+      // La API devuelve datos cada 3 horas. Buscamos los que contienen "12:00:00"
+      const dailyForecast = dataForecast.list.filter(reading => reading.dt_txt.includes("12:00:00"));
+
+      // 4. Mapeamos los datos del pronóstico
+      // Tomamos solo los primeros 4 días para que encaje en tu diseño
+      const forecastList = dailyForecast.slice(0, 4).map(day => {
+          const dateOptions = { day: '2-digit', month: 'short' };
+          const dateString = new Date(day.dt_txt).toLocaleDateString('es-ES', dateOptions);
+          
+          return {
+            date: dateString,
+            temp: Math.round(day.main.temp),
+             icon: getWeatherIcon(day.weather[0].main) // Reutilizamos tu función de iconos
+          };
+      });
+
+      // 5. Guardamos TODO en el estado
       const mappedData = {
-        city: data.name,
+        city: dataWeather.name,
         date: getCurrentDate(),
-        temp: Math.round(data.main.temp), // Redondeamos la temperatura
-        condition: data.weather[0].description, // Descripción (ej: "nubes dispersas")
-        icon: getWeatherIcon(data.weather[0].main), // Elegimos icono
-        humidity: data.main.humidity,
-        wind: data.wind.speed,
+        temp: Math.round(dataWeather.main.temp),
+        condition: dataWeather.weather[0].description,
+        icon: getWeatherIcon(dataWeather.weather[0].main),
+        humidity: dataWeather.main.humidity,
+        wind: dataWeather.wind.speed,
+        forecast: forecastList // <--- Añadimos la lista procesada aquí
       };
 
       setWeatherData(mappedData);
-      setNotFound(false); // Quitamos el error si existía
+      setNotFound(false);
+
     } catch (error) {
       console.error("Error al conectar con la API:", error);
-      setNotFound(true); // En caso de error de red, mostramos no encontrado
+      setNotFound(true);
     }
   };
 
