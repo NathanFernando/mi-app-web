@@ -498,3 +498,9 @@ form button:hover {
         margin-top: 12px;
     }
 }
+
+/* Oculta el icono de revelar contraseña por defecto de Edge/Chrome */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
