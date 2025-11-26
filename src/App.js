@@ -17,7 +17,8 @@ import rainImg from "./assets/weather/rain.svg";
 import snowImg from "./assets/weather/snow.svg";
 import drizzleImg from "./assets/weather/drizzle.svg";
 
-const API_KEY = '144504665361b1ef22f6703428df2c77';
+
+
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
@@ -46,21 +47,25 @@ function App() {
 
   const handleSearch = async (city) => {
     try {
-      // 1. Clima Actual
-      const urlWeather = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=es`;
-      const responseWeather = await fetch(urlWeather);
-      const dataWeather = await responseWeather.json();
+      // OJO AQUÍ: Debe decir localhost:4000, NO api.openweathermap.org
+      const urlWeather = `http://localhost:4000/api/weather?city=${city}`; // <--- REVISA ESTO
+      
+      console.log("Pidiendo clima a:", urlWeather); // <--- AGREGA ESTE LOG PARA DEPURAR
 
-      if (dataWeather.cod === '404') {
-        setNotFound(true);
-        setWeatherData(null);
-        return;
-      }
+      const responseWeather = await fetch(urlWeather);
+      
+      if (!responseWeather.ok) {
+      setNotFound(true);
+      setWeatherData(null);
+      return; // Detenemos la ejecución aquí
+    }
+    
+    const dataWeather = await responseWeather.json(); 
 
       // 2. Pronóstico
-      const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=es`;
-      const responseForecast = await fetch(urlForecast);
-      const dataForecast = await responseForecast.json();
+      const urlForecast = `http://localhost:4000/api/forecast?city=${city}`;
+    const responseForecast = await fetch(urlForecast);
+    const dataForecast = await responseForecast.json();
 
       const dailyForecast = dataForecast.list.filter(reading => reading.dt_txt.includes("12:00:00"));
 
