@@ -1,22 +1,17 @@
 import React, { useState } from "react";
 
-function Header({ onSearch, onLoginClick }) {
+// Recibimos los nuevos props 'user' y 'onLogout'
+function Header({ onSearch, onLoginClick, user, onLogout }) {
     const [searchCity, setSearchCity] = useState("");
 
-    const handleInputChange = (e) => {
-        setSearchCity(e.target.value);
-    };
+    const handleInputChange = (e) => setSearchCity(e.target.value);
 
     const handleSearchClick = () => {
-        if (searchCity.trim() !== "") {
-            onSearch(searchCity);
-        }
+        if (searchCity.trim() !== "") onSearch(searchCity);
     };
 
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            handleSearchClick();
-        }
+        if (e.key === "Enter") handleSearchClick();
     };
 
     return (
@@ -36,15 +31,19 @@ function Header({ onSearch, onLoginClick }) {
             </div>
 
             <div className="user-container">
-                <div id="user-info" style={{ display: "none" }}>
-                    <span id="welcome-msg"></span>
-                    <button id="logout-btn" className="login-btn">
-                        Salir
+                {/* RENDERIZADO CONDICIONAL: Si existe 'user', mostramos info. Si no, botón Login */}
+                {user ? (
+                    <div id="user-info" style={{ display: "flex" }}>
+                        <span id="welcome-msg">Hola, {user.username}</span>
+                        <button id="logout-btn" className="login-btn" onClick={onLogout}>
+                            Salir
+                        </button>
+                    </div>
+                ) : (
+                    <button id="login-btn" className="login-btn" onClick={onLoginClick}>
+                        <span className="material-symbols-outlined">login</span>
                     </button>
-                </div>
-                <button id="login-btn" className="login-btn" onClick={onLoginClick}>
-                    <span className="material-symbols-outlined">login</span>
-                </button>
+                )}
             </div>
         </header>
     );

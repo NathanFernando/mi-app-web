@@ -299,21 +299,22 @@ body::before {
 }
 
 .password-container {
-    position: relative;
+    position: relative; /* Indispensable para que el icono se mueva aquí dentro */
     display: flex;
     align-items: center;
+    width: 100%;
     margin: 10px 0;
 }
 
 .password-container input {
     width: 100%;
     padding: 10px;
+    padding-right: 40px; /* Espacio extra a la derecha para que el texto no tape al icono */
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     background: rgba(0, 0, 0, 0.2);
     color: white;
     font-family: "Poppins", sans-serif;
-    padding-right: 45px;
 }
 
 #username-input, #register-username {
@@ -327,17 +328,19 @@ body::before {
     font-family: "Poppins", sans-serif;
 }
 
-#toggle-password, #toggle-register-password {
-    position: absolute;
-    right: 15px;
+.password-container .material-symbols-outlined {
+    position: absolute;  /* Lo saca del flujo normal */
+    right: 12px;         /* Lo pega a la derecha */
+    top: 50%;            /* Lo baja a la mitad */
+    transform: translateY(-50%); /* Lo centra verticalmente perfecto */
     cursor: pointer;
-    color: #aaa;
-    transition: color 0.3s;
-    user-select: none;
+    color: #aaa;         /* Color grisáceo */
+    user-select: none;   /* Evita que se seleccione al dar doble clic */
+    z-index: 2;          /* Asegura que quede por encima del input */
 }
 
-#toggle-password:hover, #toggle-register-password:hover {
-    color: white;
+.password-container .material-symbols-outlined:hover {
+    color: white; /* Se ilumina al pasar el mouse */
 }
 
 form button {
@@ -402,27 +405,76 @@ form button:hover {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- MEDIA QUERIES --- */
+/* --- MEDIA QUERIES (TODO EN UNA FILA CON NOMBRE) --- */
+
 @media screen and (max-width: 640px) {
     .main-container {
+        width: 95%;
+        padding: 15px;
+        margin: 10px;
+    }
+
+    /* 1. Forzamos una sola fila horizontal */
+    .app-header {
+        flex-direction: row; 
+        align-items: center;
+        gap: 8px; 
+    }
+
+    .city-input {
+        width: 100%;
+        padding: 8px ;      
+        padding-right: 33px;    
+        font-size: 0.85em;      
+        background: rgba(0, 0, 0, 0.25) !important; 
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    
+    .search-btn {
+        right: 10px;
+    }
+    .search-btn span {
+        font-size: 20px; 
+    }
+
+    /* 3. CONTENEDOR DE USUARIO (Nombre + Botón) */
+    .user-container {
         width: 90%;
-        padding: 20px;
-        margin: 20px;
+        margin-left: 0;
+        flex-shrink: 0; 
     }
-    #welcome-msg {
-       display: none; /* Oculta el mensaje en pantallas muy pequeñas */
+
+    #user-info {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Espacio entre nombre y botón */
     }
-    .modal-content {
-        width: 90%;
-    }
+/* 4. EL NOMBRE */
+#welcome-msg {
+    display: block !important;
+    font-size: 0.75em;
+    /* Letra pequeña para ahorrar espacio */
+    font-weight: 500;
 }
 
+    /* 5. BOTÓN SALIR COMPACTO */
+    #logout-btn {
+        padding: 5px 8px;
+        font-size: 0.75em;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+}
 /* Responsive para el modal y formularios en móviles compactos */
 @media screen and (max-width: 480px) {
     body {
         align-items: flex-start;
         height: auto;
-        min-height: 100vh;
+        min-height: 100vh;;
     }
     .app-header {
         flex-direction: row;
@@ -503,4 +555,17 @@ form button:hover {
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
     display: none;
+}
+
+.text-link {
+    color: #6ad1b8; 
+    text-decoration: none; 
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.text-link:hover {
+  text-decoration: underline; 
+  color: #58b39d; 
 }

@@ -15,7 +15,7 @@ const weatherCacheSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 600 // IMPORTANTE: Esto borra el documento automáticamente después de 600 segundos (10 minutos)
+        expires: 600 //  Esto borra el documento automáticamente después de 600 segundos (10 minutos)
     }
 });
 

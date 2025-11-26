@@ -1,24 +1,27 @@
-// src/models/SearchLog.js
 const mongoose = require('mongoose');
 
-// Este esquema cumple con el punto "Registrar consultas meteorológicas"
 const searchLogSchema = new mongoose.Schema({
     city: {
         type: String,
         required: true,
         trim: true
     },
+    
+    username: {
+        type: String,
+        default: 'Invitado' // Si no hay login, se guarda como Invitado
+    },
     searchDate: {
         type: Date,
-        default: Date.now // Se guarda la fecha automática
+        default: Date.now
     },
     status: {
         type: String,
-        enum: ['success', 'failed'], // Solo permite estos dos valores
+        enum: ['success', 'failed'],
         default: 'success'
     },
     temp_result: {
-        type: Number, // Guardamos qué temperatura devolvió (opcional, para estadísticas)
+        type: Number,
     }
 });
 

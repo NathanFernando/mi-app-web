@@ -1,16 +1,16 @@
-// src/controllers/weatherController.js
 const weatherService = require('../services/weatherService');
 
-// --- 1. CONTROLADOR DE CLIMA ACTUAL ---
 const getWeather = async (req, res) => {
-    const { city } = req.query; // Esperamos ?city=Londres en la URL
+    // Leemos 'city' y 'username' de la URL
+    const { city, username } = req.query;
 
     if (!city) {
         return res.status(400).json({ error: 'Debe proporcionar el nombre de una ciudad.' });
     }
 
     try {
-        const data = await weatherService.getWeatherData(city);
+        // Pasamos ambos datos al servicio
+        const data = await weatherService.getWeatherData(city, username);
         res.status(200).json(data);
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -19,9 +19,8 @@ const getWeather = async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
-}; // <--- ¡AQUÍ FALTABA CERRAR LA PRIMERA FUNCIÓN!
+};
 
-// --- 2. CONTROLADOR DE PRONÓSTICO ---
 const getForecast = async (req, res) => {
     const { city } = req.query;
 
@@ -39,5 +38,4 @@ const getForecast = async (req, res) => {
     }
 };
 
-// Exportamos ambas funciones
 module.exports = { getWeather, getForecast };
