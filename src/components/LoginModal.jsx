@@ -24,7 +24,7 @@ function LoginModal({ style, onClose, onLoginSuccess }) {
     setErrorMsg('');
 
     const endpoint = isRegistering ? 'register' : 'login';
-    const url = `http://localhost:4000/api/users/${endpoint}`;
+    const url = `http://192.168.1.49:4000/api/users/${endpoint}`;
 
     try {
       const response = await fetch(url, {

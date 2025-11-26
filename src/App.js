@@ -68,7 +68,7 @@ function App() {
       const userQuery = currentUser ? currentUser.username : 'Invitado';
 
       // 2. Enviar username en la URL
-      const urlWeather = `http://localhost:4000/api/weather?city=${city}&username=${userQuery}`;
+      const urlWeather = `http://192.168.1.49:4000/api/weather?city=${city}&username=${userQuery}`;
 
       console.log("Pidiendo clima a:", urlWeather);
 
@@ -83,7 +83,7 @@ function App() {
       const dataWeather = await responseWeather.json();
 
       // Pronóstico
-      const urlForecast = `http://localhost:4000/api/forecast?city=${city}`;
+      const urlForecast = `http://192.168.1.49:4000/api/forecast?city=${city}`;
       const responseForecast = await fetch(urlForecast);
       const dataForecast = await responseForecast.json();
 
