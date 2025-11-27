@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { API_URL } from '../config';
 function LoginModal({ style, onClose, onLoginSuccess }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -24,7 +24,7 @@ function LoginModal({ style, onClose, onLoginSuccess }) {
     setErrorMsg('');
 
     const endpoint = isRegistering ? 'register' : 'login';
-    const url = `http://192.168.1.49:4000/api/users/${endpoint}`;
+    const url = `${API_URL}/users/${endpoint}`;
 
     try {
       const response = await fetch(url, {

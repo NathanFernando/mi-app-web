@@ -163,7 +163,7 @@ body::before {
 }
 
 .forecast-item {
-    min-width: 75px;
+    min-width: 70px;
     background: rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
@@ -408,12 +408,16 @@ form button:hover {
 /* --- MEDIA QUERIES (TODO EN UNA FILA CON NOMBRE) --- */
 
 @media screen and (max-width: 640px) {
+    
     .main-container {
         width: 95%;
-        padding: 15px;
-        margin: 10px;
+        padding: 10px;
+        margin: 20px auto;
+        max-width: 100vw; 
+        overflow-x: hidden; 
+        
     }
-
+    
     /* 1. Forzamos una sola fila horizontal */
     .app-header {
         flex-direction: row; 
@@ -454,7 +458,6 @@ form button:hover {
 #welcome-msg {
     display: block !important;
     font-size: 0.75em;
-    /* Letra pequeña para ahorrar espacio */
     font-weight: 500;
 }
 
@@ -467,6 +470,54 @@ form button:hover {
 
     .modal-content {
         width: 95%;
+    }
+
+    /* --- DISTRIBUCIÓN PERFECTA CON GRID (Reemplaza lo anterior) --- */
+    
+    .forecast-items-container {
+        /* Usamos Grid en lugar de Flex para precisión matemática */
+        display: grid;
+        /* "Crea 4 columnas de igual tamaño (1 fracción cada una)" */
+        grid-template-columns: repeat(4, 1fr); 
+        
+        gap: 30px; /* Espacio pequeño pero suficiente entre tarjetas */
+        width: 100%;
+        margin-top: 15px;
+        
+        /* Aseguramos que no se desborde */
+        box-sizing: border-box;
+    }
+
+    .forecast-item {
+        /* Reseteamos anchos para que el Grid mande */
+        width: auto;
+        min-width: 0; /* Vital: permite que la tarjeta se encoja si es necesario */
+        
+        /* Ajustamos el relleno para pantallas angostas */
+        padding: 10px 5px; 
+        
+        /* Centramos todo el contenido */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Ajuste de textos e iconos para que no se vean gigantes */
+    .forecast-item-date {
+        font-size: 0.75em; /* Fecha pequeña */
+        white-space: nowrap; /* Que no se parta la fecha */
+    }
+    
+    .forecast-item-temp {
+        font-size: 0.85em; /* Temperatura legible */
+        font-weight: 600;
+    }
+    
+    .forecast-item-img {
+        width: 25px; /* Icono un poco más compacto */
+        height: 30px;
+        margin: 4px 0;
     }
 }
 /* Responsive para el modal y formularios en móviles compactos */
@@ -566,6 +617,88 @@ input[type="password"]::-ms-clear {
 }
 
 .text-link:hover {
-  text-decoration: underline; 
-  color: #58b39d; 
+    text-decoration: underline; 
+    color: #58b39d; 
 }
+
+/* --- ESTILOS DE LA ESTRELLA (WEATHER INFO) --- */
+
+.star-icon {
+    font-size: 1.5em; /* Tamaño */
+    margin-left: 10px;
+    cursor: pointer;
+    user-select: none; /* Que no se pueda seleccionar como texto */
+    transition: transform 0.2s, color 0.3s; /* Animación suave */
+}
+
+/* Estado: Es Favorito (Dorado) */
+.star-icon.active {
+    color: #FFD700;
+}
+
+/* Estado: No es Favorito (Gris transparente) */
+.star-icon.inactive {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Efecto al hacer clic (pequeño rebote) */
+.star-icon:active {
+    transform: scale(1.3);
+}
+
+/* ========================================= */
+/* --- ESTILOS DE LA BARRA DE FAVORITOS --- */
+/* ========================================= */
+
+.favorites-container {
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* ESTO EVITA QUE SE ROMPA EL ANCHO */
+    width: 100%;
+    box-sizing: border-box; 
+    overflow: hidden; /* Mantiene todo adentro */
+}
+
+.favorites-list {
+    display: flex;
+    gap: 10px;
+    
+    /* ACTIVAR DESLIZAMIENTO (SCROLL) */
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    width: 100%;
+    padding-bottom: 5px; /* Espacio para el dedo */
+    
+    /* Suavidad */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Reglas para las tarjetas */
+.favorite-card {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    
+    /* EL SECRETO: NO ENCOGERSE */
+    flex: 0 0 auto; 
+    min-width: fit-content;
+}
+
+/* Textos y botones */
+.fav-city-name { font-size: 0.9em; font-weight: 500; }
+.fav-title { font-size: 0.8em; color: rgba(255,255,255,0.7); margin-bottom: 5px; }
+.fav-remove-btn { background: none; border: none; color: #ddd; cursor: pointer; padding: 0; display: flex; }
+
+/* Estilo barra scroll */
+.favorites-list::-webkit-scrollbar { height: 3px; }
+.favorites-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }

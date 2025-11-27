@@ -64,4 +64,38 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+const toggleFavorite = async (req, res) => {
+    const { username, city } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        // Verificamos si la ciudad ya está en favoritos
+        const index = user.favorites.indexOf(city);
+
+        if (index !== -1) {
+            // CASO 1: YA EXISTE -> LA BORRAMOS
+            user.favorites.splice(index, 1);
+            await user.save();
+            return res.status(200).json({ message: 'Eliminado de favoritos', favorites: user.favorites });
+        } else {
+            // CASO 2: NO EXISTE -> LA AGREGAMOS
+            // Validación: Máximo 4 ciudades
+            if (user.favorites.length >= 4) {
+                return res.status(400).json({ error: 'Solo puedes tener 4 ciudades favoritas.' });
+            }
+
+            user.favorites.push(city);
+            await user.save();
+            return res.status(200).json({ message: 'Agregado a favoritos', favorites: user.favorites });
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar favoritos.' });
+    }
+};
+
+
+module.exports = { register, login, toggleFavorite };

@@ -20,15 +20,15 @@ app.use(express.json());
 
 // Log para ver si llegan las peticiones (Opcional pero útil)
 app.use((req, res, next) => {
-    console.log(`🔔 Petición recibida: ${req.method} ${req.url}`);
+    console.log(` Petición recibida: ${req.method} ${req.url}`);
     next();
 });
 
 // --- CONEXIÓN MONGO ---
 const uri = process.env.MONGO_URI;
 mongoose.connect(uri)
-    .then(() => console.log('✅ Conexión exitosa a MongoDB Atlas'))
-    .catch((err) => console.error('❌ Error conectando a MongoDB:', err));
+    .then(() => console.log(' Conexión exitosa a MongoDB Atlas'))
+    .catch((err) => console.error(' Error conectando a MongoDB:', err));
 
 // --- RUTAS ---
 app.use('/api', weatherRoutes);

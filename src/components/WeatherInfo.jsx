@@ -1,14 +1,27 @@
 import React from 'react';
-import thunderstormImg from '../assets/weather/thunderstorm.svg'; // Ruta ajustada con ".."
+import thunderstormImg from '../assets/weather/thunderstorm.svg'; 
 
-function WeatherInfo({ data }) {
+function WeatherInfo({ data, isFavorite, onToggleFavorite }) {
     return (
         <section className="weather-info">
             <div className="location-date-container">
                 <div className="location">
                     <span className="material-symbols-outlined">location_on</span>
                     <h4 className="country-txt">{data.city}</h4>
+
+                    {/* --- LÓGICA DE LA ESTRELLA (LIMPIA) --- */}
+                    {onToggleFavorite && (
+                        <span 
+                            /* Aquí cambiamos la clase dinámicamente según isFavorite */
+                            className={`material-symbols-outlined star-icon ${isFavorite ? 'active' : 'inactive'}`}
+                            onClick={() => onToggleFavorite(data.city)}
+                            title={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
+                        >
+                            {isFavorite ? 'star' : 'star_border'}
+                        </span>
+                    )}
                 </div>
+                
                 <h5 className="current-date-txt regular-txt">{data.date}</h5>
             </div>
 
@@ -38,7 +51,6 @@ function WeatherInfo({ data }) {
             </div>
 
             <div className="forecast-items-container">
-                {/* Lógica para mostrar pronóstico si existe */}
                 {data.forecast ? (
                     data.forecast.map((item, index) => (
                         <div className="forecast-item" key={index}>
@@ -48,7 +60,6 @@ function WeatherInfo({ data }) {
                         </div>
                     ))
                 ) : (
-                    // Fallback estático si no hay forecast (opcional)
                     [...Array(4)].map((_, index) => (
                         <div className="forecast-item" key={index}>
                             <h5 className="forecast-item-date regular-txt">05 Aug</h5>

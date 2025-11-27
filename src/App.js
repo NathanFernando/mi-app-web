@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
+import { API_URL } from './config';
 
 // --- COMPONENTES ---
 import Header from './components/Header';
 import WeatherInfo from './components/WeatherInfo';
 import MessageSection from './components/MessageSection';
 import LoginModal from './components/LoginModal';
+import FavoritesBar from './components/FavoritesBar'; // <--- NUEVO IMPORT
 
 // --- IMÁGENES ---
 import searchCityImg from './assets/message/search-city.png';
@@ -45,6 +47,41 @@ function App() {
     setWeatherData(null);
   };
 
+  // --- LÓGICA DE FAVORITOS (NUEVA) ---
+  const handleToggleFavorite = async (city) => {
+    if (!currentUser) return;
+
+    try {
+      const response = await fetch(`${API_URL}/users/favorites`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            username: currentUser.username, 
+            city: city 
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Actualizamos usuario y localStorage con los nuevos favoritos
+        const updatedUser = { ...currentUser, favorites: data.favorites };
+        setCurrentUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      } else {
+        alert(data.error || "Error al actualizar favoritos");
+      }
+    } catch (error) {
+      console.error("Error actualizando favoritos", error);
+    }
+  };
+
+  // Función para cargar ciudad al hacer clic en la barra
+  const handleSelectFavorite = (city) => {
+    handleSearch(city);
+  };
+
+  // --- UTILIDADES ---
   const getCurrentDate = () => {
     const options = { weekday: 'short', day: '2-digit', month: 'short' };
     return new Date().toLocaleDateString('es-ES', options);
@@ -62,13 +99,11 @@ function App() {
     }
   };
 
+  // --- BÚSQUEDA ---
   const handleSearch = async (city) => {
     try {
-      // 1. Detectar quién es el usuario para el historial
       const userQuery = currentUser ? currentUser.username : 'Invitado';
-
-      // 2. Enviar username en la URL
-      const urlWeather = `http://192.168.1.49:4000/api/weather?city=${city}&username=${userQuery}`;
+      const urlWeather = `${API_URL}/weather?city=${city}&username=${userQuery}`;
 
       console.log("Pidiendo clima a:", urlWeather);
 
@@ -83,7 +118,7 @@ function App() {
       const dataWeather = await responseWeather.json();
 
       // Pronóstico
-      const urlForecast = `http://192.168.1.49:4000/api/forecast?city=${city}`;
+      const urlForecast = `${API_URL}/forecast?city=${city}`;
       const responseForecast = await fetch(urlForecast);
       const dataForecast = await responseForecast.json();
 
@@ -129,10 +164,24 @@ function App() {
           onLogout={handleLogout}
         />
 
+        {/* BARRA DE FAVORITOS (Solo si hay usuario conectado) */}
+        {currentUser && (
+          <FavoritesBar 
+            favorites={currentUser.favorites} 
+            onSelectCity={handleSelectFavorite}
+            onRemoveCity={handleToggleFavorite}
+          />
+        )}
+
         {notFound ? (
           <MessageSection image={notFoundImg} title="No se encontró" text="La ciudad que busca no se encuentra." className="not-found" />
         ) : weatherData ? (
-          <WeatherInfo data={weatherData} />
+          <WeatherInfo 
+            data={weatherData}
+            // Pasamos props nuevos para la estrella
+            isFavorite={currentUser ? currentUser.favorites.includes(weatherData.city) : false}
+            onToggleFavorite={currentUser ? handleToggleFavorite : null} 
+          />
         ) : (
           <MessageSection image={searchCityImg} title="BUSCAR CIUDAD" text="Averigua el clima de cualquier ciudad del mundo." className="search-city" />
         )}
