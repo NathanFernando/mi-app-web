@@ -8,17 +8,14 @@ const weatherRoutes = require('./src/routes/weatherRoutes');
 const userRoutes = require('./src/routes/userRoutes'); 
 const app = express();
 
-// --- MIDDLEWARES  ---
 
-// 3. CORS debe ir PRIMERO que todo
-// le dice al navegador: "Deja pasar a cualquiera, no bloquees"
 app.use(cors());
 
-// 4. JSON debe ir SEGUNDO
+
 // permite que el servidor entienda los datos que envía el LoginModal
 app.use(express.json());
 
-// Log para ver si llegan las peticiones (Opcional pero útil)
+// Impresion en pantalla para ver si llegan las peticiones 
 app.use((req, res, next) => {
     console.log(` Petición recibida: ${req.method} ${req.url}`);
     next();

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//Registro de busqueda
 const searchLogSchema = new mongoose.Schema({
     city: {
         type: String,

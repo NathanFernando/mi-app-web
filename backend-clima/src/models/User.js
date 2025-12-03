@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//Esquema de usuario
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // Campo extra para el futuro: Lista de ciudades favoritas
+    // Lista de ciudades favoritas
     favorites: [{
         type: String
     }],

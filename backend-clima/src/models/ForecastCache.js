@@ -1,6 +1,6 @@
 // src/models/ForecastCache.js
 const mongoose = require('mongoose');
-
+//PronosticoCache
 const forecastCacheSchema = new mongoose.Schema({
     city_lower: {
         type: String,
