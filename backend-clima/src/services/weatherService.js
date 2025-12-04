@@ -14,7 +14,7 @@ const getWeatherData = async (city, username) => {
     const cachedData = await WeatherCache.findOne({ city_lower: citySanitized });
 
     if (cachedData) {
-        console.log(`⚡ Usando datos en caché para: ${city}`);
+        console.log(` Usando datos en caché para: ${city}`);
 
         // Guardamos log con usuario
         try {
