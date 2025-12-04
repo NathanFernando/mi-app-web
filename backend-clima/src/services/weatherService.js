@@ -25,7 +25,7 @@ const getWeatherData = async (city, username) => {
     }
 
     // 2. Si no hay caché, consultar OpenWeather
-    console.log(`🌐 Consultando API externa para: ${city}`);
+    console.log(` Consultando API externa para: ${city}`);
     try {
         const apiKey = process.env.OPENWEATHER_API_KEY;
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=es`;
@@ -62,11 +62,11 @@ const getForecastData = async (city) => {
 
     const cachedForecast = await ForecastCache.findOne({ city_lower: citySanitized });
     if (cachedForecast) {
-        console.log(`⚡ Usando Pronóstico en caché para: ${city}`);
+        console.log(` Usando Pronóstico en caché para: ${city}`);
         return cachedForecast.data;
     }
 
-    console.log(`🌐 Consultando API Pronóstico para: ${city}`);
+    console.log(` Consultando API Pronóstico para: ${city}`);
     try {
         const apiKey = process.env.OPENWEATHER_API_KEY;
         const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric&lang=es`;
